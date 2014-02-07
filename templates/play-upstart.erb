@@ -27,7 +27,7 @@ pre-start script
         test -c /dev/null || { stop; exit 0; }
         cd $PROJ_HOME
         rm $PROJ_HOME/server.pid || true
-        $PLAY_HOME/play dependencies $PROJ_HOME
+        $PLAY_HOME/play $PROJ_HOME
 end script
 
 pre-stop exec $PLAY_HOME/play stop $PROJ_HOME
