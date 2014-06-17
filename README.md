@@ -3,7 +3,7 @@ Puppet Module For Play
 
 This module provisions the Play Framework, manages Play modules and Play applications. It supports:
 
-* The provisioning of Play Framework in _/opt/play-version_
+* The provisioning of Play Framework in _/usr/share/play-version_
 * The installation of modules
 * The management of Play applications
 * The configuration of system services to run play applications

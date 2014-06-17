@@ -3,7 +3,7 @@ Play Class
 
 Actions:
 --------
-If not already installed, play 1.2.3 is downloaded and installed into _/opt/play-1.2.3_. 
+If not already installed, play 1.2.3 is downloaded and installed into _/usr/share/play-2.3.0_. 
 
  Requires:
 -----------
