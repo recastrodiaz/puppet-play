@@ -1,7 +1,7 @@
 # Class: play
 #
 # This module manages play framework applications and modules.
-# The class itself installs Play 2.3.0 in /usr/share/play-2.3.0
+# The class itself installs Play 2.3.0 in /usr/share/activator-1.2.2
 #
 # Actions:
 #  play::module checks the availability of a Play module. It installs
@@ -42,7 +42,7 @@ class play (
 
 include wget
 
-$play_path = "${install_path}/activator-${version}"
+$play_path = "${install_path}/activator-${version}-minimal"
 $download_url = "http://downloads.typesafe.com/typesafe-activator/${version}/typesafe-activator-${version}-minimal.zip"
 
 notice("Installing Play Activator ${version}")
@@ -66,7 +66,7 @@ exec {"unzip-play-framework":
 
 exec { "change ownership of play installation":
   cwd      => "${install_path}",
-  command  => "/bin/chown -R ${user}: activator-${version}",
+  command  => "/bin/chown -R ${user}: activator-${version}-minimal",
   require  => Exec["unzip-play-framework"]
 
 }
