@@ -7,8 +7,7 @@ version         "1.0"
 
 env PROJ_HOME=<%= @path %>
 
-env PLAY_HOME=<%= @play_home %>
-env PLAY_BINARY=${PLAY_HOME}/target/universal/stage/bin/<%= @projectName %>
+env PLAY_BINARY=${PROJ_HOME}/target/universal/stage/bin/<%= @projectName %>
 
 env USER=<%= @user %>
 env GROUP=<%= @group %>
@@ -19,22 +18,26 @@ stop on runlevel [!2345]
 respawn
 respawn limit 100 60
 umask 022
-expect fork
+expect daemon
 
 
 pre-start script
-        test -x $PLAY_HOME/activator || { stop; exit 0; }
+        test -x $PLAY_BINARY || { stop; exit 0; }
         test -c /dev/null || { stop; exit 0; }
         chdir ${PROJ_HOME}
-        rm ${PROJ_HOME}/RUNNING_PID || true
-        $PLAY_HOME/activator $PROJ_HOME
+        if [ -f ${PROJ_HOME}/RUNNING_PID ] && ! ps -p `cat ${PROJ_HOME}/RUNNING_PID` > /dev/null ; then 
+		  rm ${PROJ_HOME}/RUNNING_PID ; 
+		fi
 end script
 
 post-stop script
-        rm ${PROJ_HOME}/RUNNING_PID || true
+        rm -f ${PROJ_HOME}/RUNNING_PID
 end script
 
 script
-cd $PROJ_HOME
-exec start-stop-daemon --start --exec $PLAY_HOME/play --chuid $USER:$GROUP --chdir $PROJ_HOME -- start $PROJ_HOME  <%= @frameworkId %> <%= @javaOptions %>
+echo "1. "
+cd ${PROJ_HOME}
+echo "2. "
+exec start-stop-daemon --pidfile ${PROJ_HOME}/RUNNING_PID --chdir ${PROJ_HOME} --chuid $USER:$GROUP --exec ${PLAY_BINARY} --background --start -- <%= @javaOptions %>
+echo "3. "
 end script
