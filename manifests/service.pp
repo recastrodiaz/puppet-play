@@ -37,7 +37,7 @@ define play::service($path, $frameworkId = "", $javaOptions = "", $user = "root"
 	$play_home = $play::play_path
 	
 	file { "/etc/init/$title.conf":
-		content => template("play/play-upstart.erb"),
+		content => template("play/playframework.erb"),
 		mode    => "0755",
 	}
 

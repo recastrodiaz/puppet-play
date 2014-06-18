@@ -16,18 +16,17 @@ start on (filesystem and net-device-up IFACE=lo) or runlevel [2345]
 stop on runlevel [!2345]
 
 respawn
-respawn limit 10 5
+respawn limit 100 60
 umask 022
 expect fork
 
-chdir <%= play_home %>
 
 pre-start script
-        test -x $PLAY_HOME/play || { stop; exit 0; }
+        test -x $PLAY_HOME/activator || { stop; exit 0; }
         test -c /dev/null || { stop; exit 0; }
-        cd $PROJ_HOME
-        rm $PROJ_HOME/server.pid || true
-        $PLAY_HOME/play $PROJ_HOME
+        chdir ${PROJ_HOME}
+        rm ${PROJ_HOME}/server.pid || true
+        $PLAY_HOME/activator $PROJ_HOME
 end script
 
 pre-stop exec $PLAY_HOME/play stop $PROJ_HOME
@@ -38,5 +37,5 @@ end script
 
 script
 cd $PROJ_HOME
-exec start-stop-daemon --start --exec $PLAY_HOME/play --chuid $USER:$GROUP -- start $PROJ_HOME  <%= frameworkId %> <%= javaOptions %>
+exec start-stop-daemon --start --exec $PLAY_HOME/play --chuid $USER:$GROUP --chdir $PROJ_HOME -- start $PROJ_HOME  <%= frameworkId %> <%= javaOptions %>
 end script
