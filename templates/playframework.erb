@@ -1,13 +1,14 @@
 #
-# Upstart script for <%= name %>
+# Upstart script for <%= @name %>
 #
-description     "Start and Stop the <%= name %> application"
+description     "Start and Stop the <%= @name %> application"
 author          "Clement Escoffier <clement.escoffier@gmail.com>"
 version         "1.0"
 
 env PROJ_HOME=<%= @path %>
+env PID=<%= @path %>/RUNNING_PID
 
-env PLAY_BINARY=${PROJ_HOME}/target/universal/stage/bin/<%= @projectName %>
+env PLAY_BINARY=<%= @path %>/target/universal/stage/bin/<%= @projectName %>
 
 env USER=<%= @user %>
 env GROUP=<%= @group %>
@@ -21,23 +22,10 @@ umask 022
 expect daemon
 
 
-pre-start script
-        test -x $PLAY_BINARY || { stop; exit 0; }
-        test -c /dev/null || { stop; exit 0; }
-        chdir ${PROJ_HOME}
-        if [ -f ${PROJ_HOME}/RUNNING_PID ] && ! ps -p `cat ${PROJ_HOME}/RUNNING_PID` > /dev/null ; then 
-		  rm ${PROJ_HOME}/RUNNING_PID ; 
-		fi
-end script
-
-post-stop script
-        rm -f ${PROJ_HOME}/RUNNING_PID
-end script
-
 script
 echo "1. "
 cd ${PROJ_HOME}
 echo "2. "
-exec start-stop-daemon --pidfile ${PROJ_HOME}/RUNNING_PID --chdir ${PROJ_HOME} --chuid $USER:$GROUP --exec ${PLAY_BINARY} --background --start -- <%= @javaOptions %>
+exec start-stop-daemon --pidfile <%= @path %>/RUNNING_PID --chdir <%= @path %> --chuid $USER:$GROUP --exec <%= @path %>/target/universal/stage/bin/<%= @projectName %> --background --start -- <%= @javaOptions %>
 echo "3. "
 end script
