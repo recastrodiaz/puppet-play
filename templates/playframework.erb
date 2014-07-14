@@ -6,7 +6,7 @@ author          "Clement Escoffier <clement.escoffier@gmail.com>"
 version         "1.0"
 
 env PROJ_HOME=<%= @path %>
-env PID=<%= @path %>/RUNNING_PID
+env PID_FILE=<%= @path %>/target/universal/stage/RUNNING_PID
 
 env PLAY_BINARY=<%= @path %>/target/universal/stage/bin/<%= @projectName %>
 
@@ -26,6 +26,21 @@ script
 echo "1. "
 cd ${PROJ_HOME}
 echo "2. "
-exec start-stop-daemon --pidfile <%= @path %>/RUNNING_PID --chdir <%= @path %> --chuid $USER:$GROUP --exec <%= @path %>/target/universal/stage/bin/<%= @projectName %> --background --start -- <%= @javaOptions %>
+exec start-stop-daemon --pidfile <%= @path %>/target/universal/stage/RUNNING_PID --chdir <%= @path %> --chuid $USER:$GROUP --exec <%= @path %>/target/universal/stage/bin/<%= @projectName %> --background --start -- <%= @javaOptions %>
 echo "3. "
+end script
+
+pre-start script
+	if [ -f "$" ]
+	then
+		if [ ps -fp `cat $PID_FILE` ]
+		then
+			echo "Play is already running. Exit" && exit -123
+		else 
+			echo "Play not running. Removing RUNNING_PID"
+			rm -f $PID_FILE
+		fi
+	else
+		echo "PID file does not exist"
+	fi
 end script
