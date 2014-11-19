@@ -33,7 +33,7 @@ end script
 pre-start script
 	if [ -f "$PID_FILE" ]
 	then
-		if [ ps -fp `cat <%= @path %>/target/universal/stage/RUNNING_PID` ]
+		if [ ps -p `cat $PID_FILE` > /dev/null 2&1 ]
 		then
 			echo "Play is already running. Exit" && exit -123
 		else 
